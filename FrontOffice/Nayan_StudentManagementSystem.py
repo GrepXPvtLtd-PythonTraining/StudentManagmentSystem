@@ -48,27 +48,48 @@ def checkIfStudentExit(f, studentname):
             return True
 
 
-# def updateStudentInfo():
-#     file_r = open("Studentinfo.txt", "r")
-#     file_w = open("temp.txt", "w")
-#     print(file_r.read())
-#     rollNum = input("Enter The Roll Number   =  ")
-#     s = " "
-#     while s:
-#         s = file_r.readline()
-#         lis = s.split("|")
-#         if len(s) > 0:
-#             if lis[0] == rollNum:
-#                 name = input("Enter Student Name = ")
-#                 age = int(input("Enter Age = "))
-#                 phoneNumber = int(input("Enter Phone Number = "))
-#                 file_w.write(rollNum, name, age, phoneNumber)
-#             else:
-#                 file_w.write(s)
-#     file_w.close()
-#     file_r.close()
-#     os.remove("Studentinfo.txt")
-#     os.rename("temp.txt", "Studentinfo.txt")
+def updateStudentInfo():
+    fh_r = open("Studentinfo.txt", "r")
+    fh_w = open("temp.txt", "w")
+    student_name = input("Enter The Student Name to Update = ")
+    data = " "
+    while data:
+        data = fh_r.readline()
+        l = data.split("|")
+        for i in range(0, len(l) - (len(l) - 1)):
+            roll_no = l[0]
+            if len(data) > 0:
+                if l[1] == student_name:
+                    name = input("Enter New Name = ")
+                    age = int(input("Enter New Age = "))
+                    ph = int(input("Enter New Phone NUmber = "))
+                    fh_w.write("{}|{}|{}|{}\n".format(roll_no, name, age, ph))
+                else:
+                    fh_w.write(data)
+    fh_w.close()
+    fh_r.close()
+    os.remove("Studentinfo.txt")
+    os.rename("temp.txt", "Studentinfo.txt")
+
+
+def delete():
+    fh_r = open("Studentinfo.txt", "r")
+    fh_w = open("temp.txt", "w")
+    student_name = input("Enter The Student Name to Delete The Record = ")
+    data = " "
+    while data:
+        data = fh_r.readline()
+        l = data.split("|")
+        for i in range(0, len(l) - (len(l) - 1)):
+            roll_no = l[0]
+            if len(data) > 0:
+                if l[1] != student_name:
+                    fh_w.write(data)
+
+    fh_w.close()
+    fh_r.close()
+    os.remove("Studentinfo.txt")
+    os.rename("temp.txt", "Studentinfo.txt")
 
 
 def choice():
@@ -89,7 +110,7 @@ def add(file):
     phoneNumber = int(input("Enter Phone Number = "))
     check = checkIfStudentExit(file, name)
     if check is True:
-        print("student already exit ")
+        print("student already exist ")
         return False
     else:
         addToFile(file, studentId, name, age, phoneNumber)
@@ -106,18 +127,24 @@ if __name__ == '__main__':
             print("\n")
             print("----New Student added-----")
             readFile()
-
     elif ch == 2:
+        f.close()
+        print("\n")
         readFile()
-        Name = input("Enter the Name You Want To Delete the data = ")
-
+        delete()
+        print("\n")
+        print("File After Deletion")
+        readFile()
     elif ch == 3:
         Name = input("Enter the Name You Want To Search = ")
         checkTheFile(f, Name)
     elif ch == 4:
         readFile()
     elif ch == 5:
-        pass
-        # updateStudentInfo()
+        readFile()
+        f.close()
+        updateStudentInfo()
+        print("\n")
+        print("File After Update")
     else:
         print("Enter A Valid Option")

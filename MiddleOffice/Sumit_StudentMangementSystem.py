@@ -1,41 +1,71 @@
-def add():
-    name = input("Enter Name :- ")
-    age = int(input("Enter Age :- "))
-    phone_number = int(input("Enter Phone Number :-"))
+import sqlite3
 
-    print("New Student is added")
-
-
-def delete():
-    name = input("Enter Name of Student:- ")
-    print("Delete Student")
-
-
-def search():
-    name = input("Enter Name of Student:- ")
-    print("It should display student Name", name)
+def NewAdmission():
+    co.execute("drop table if exists studentdetail ")
+    co.execute("""create table studentdetail(
+                  Sequence integer,
+                  Name text,
+                  Email text,
+                  DOB text,
+                  Phone_nu integer,
+                  Address text
+                  )""")
+    con.commit()
 
 
-def header():
-    print('''********* \nWainganga \n***********''')
 
 
-def choice():
-    print(''' 1.Add New Student\n 2.Delete Student\n 3.Search Student''')
-    choice = int(input("Enter You choice :- "))
-    return choice
+def AddStudent():
+    sequence = int(input("Enter the sequence no. of student :- "))
+    Name = input("Enter the Name of Students :- ")
+    Email = input("Enter the Email :- ")
+    DOB = input("Enter the DOB of Student :- ")
+    Phone_nu = int(input("Enter mob_no of student :-"))
+    Address = input("Enter the address of student :- ")
+    co.execute(
+        "insert into studentdetail values({},'{}','{}','{}',{},'{}')".format(sequence, Name, Email, DOB, Phone_nu,
+                                                                             Address))
+    con.commit()
+    print("Student added")
+    SearchStudent()
+
+
+
+def DeleteStudent():
+    Name = input("Enter the Name of Students :- ")
+    co.execute("delete from studentdetail where name = '{}'".format(Name))
+    print("Student is delete")
+    con.commit()
+
+
+
+
+def SearchStudent():
+    Name = input("Enter the Name of Students :- ")
+    co.execute("select * from studentdetail where name = '{}'".format(Name))
+    print(co.fetchall())
+    con.commit()
+
+
+
+def Choise():
+    print("1. Add student \n 2. Delete Student \n 3. Search student")
+    Choise = int(input("Enter your choise :- "))
+    if Choise == 1:
+        AddStudent()
+    elif Choise == 2:
+        DeleteStudent()
+    elif Choise == 3:
+        SearchStudent()
+    else:
+        print("Enter valid choise")
+
+
 
 
 if __name__ == "__main__":
-    cho = choice()
-    if cho == 1:
-        header()
-        add()
-    elif cho == 2:
-        header()
-        delete()
-    elif cho == 3:
-        header()
-        search()
-    else:
-        print("Invalid Choice")
+    con = sqlite3.connect('studentdetail.db')
+    co = con.cursor()
+    NewAdmission()
+    Choise()
+    con.close()

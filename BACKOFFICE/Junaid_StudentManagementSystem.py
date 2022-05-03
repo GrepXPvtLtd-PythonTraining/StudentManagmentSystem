@@ -1,89 +1,61 @@
-import os
-
-def createfile():
-    file = open("studentinfo.txt", "a+")
-    return file
-
-def addtofile(file, studentid, studentname, age, phonenumber):
-    file.write("{}/{}/{}/{}\n".format(studentid,studentname,age,phonenumber))
-    file.close()
-
-    def readfile():
-        file = open("studeninfo.txt")
-        print(file.read())
-        file.close()
+import sqlite3
 
 
-def checkthefile(f, studentname):
-    f = open("studentinfo.txt", "r")
-    data = f.readlines()
-    data = " "
-    for line in data :
-        splitData = line.split("/")
-        rollNum = splitData[0]
-        studentname = splitData[1]
-        age = splitData[2]
-        phonenumber = splitData[3]
-        if studentname == studentname:
-            print("{}/{}/{}".format(rollNum, studentname, age, phonenumber))
+def newadmission():
+    cur.execute("drop table if exists studentinfo")
+    cur.execute("""create table studentinfo(
+                     sequence INTEGER,
+                     First_Name TEXT,
+                     Last_Name TEXT,
+                     Date_of_Birth INTEGER,
+                     Phone_Number INTEGER
+                     )""")
+
+    conn.commit()
 
 
-    def checkifstudentexit(f, studentname) :
-f = open("studentinfo.txt", "r")
-data = " "
-data = f.readlines()
-for line in data:
-    splitData = line.split("/")
-    rollNum = splitData[0]
-    studentname = splitData[1]
-    age = splitData[2]
-    phonenumber = splitData[3]
-    if studentname == studentname:
-        print("{}/{}/{}".format(rollNum, studentname, age, phonenumber))
-
-def choice():
- print("********Student management system*******")
- print("1. add new student \n 2. delete student \n 3. search student \n 4. list student")
- choice = int(input("enter your choice : "))
+def addstudent():
+    sequence = int(input(" enter sequence : "))
+    First_name = input(" enter student name : ")
+    Last_name = input(" enter your last name : ")
+    Date_of_birth = int(input(" enter  student date of birth : "))
+    Phone_number = int(input(" enter phone number : "))
+    cur.execute(
+        "insert into studentinfo values({},'{}','{}',{},{})".format(sequence, First_name, Last_name, Date_of_birth,
+                                                                    Phone_number))
+    conn.commit()
+    print(" student added ")
+    searchstudent()
 
 
-def add(file):
-    print("****Add student information**** ")
-    f = open("Studentinfo.txt", "r")
-    studentId = len(f.readlines()) + 1
-    name = input("Enter Student Name = ")
-    age = int(input("Enter Age = "))
-    phoneNumber = int(input("Enter Phone Number = "))
-    check = checkIfStudentExit(file, name)
-    if check is True:
-        print("student already exit ")
-        return False
+
+def deletestudent():
+    f_name = input("enter the first name of student to be deleted : ")
+    l_name = input("enter the last name of student to be deleted : ")
+    cur.execute("delete from studentinfo where First_name = '{}', Last_name = '{}'".format(f_name, l_name))
+    conn.commit()
+
+
+def searchstudent():
+    f_name = input("enter the first name of student to be searched : ")
+    cur.execute("select * from studentinfo where First_name = '{}'".format(f_name))
+    print(cur.fetchall())
+    conn.commit()
+
+
+if __name__ == "__main__":
+    conn = sqlite3.connect('studentinfo.db')
+    cur = conn.cursor()
+    newadmission()
+    print("1. addstudent \n 2.delete \n 3.search ")
+    choice = int(input(" enter your choice : "))
+    if choice == 1:
+        addstudent()
+
+    elif choice == 2:
+        deletestudent()
+    elif choice == 3:
+        searchstudent()
     else:
-        addToFile(file, studentId, name, age, phoneNumber)
-
-
-if _name_ == '_main_':
-    f = createFile()
-    ch = choice()
-    if ch == 1:
-        result = add(f)
-        if result is False :
-            pass
-        else:
-            print("\n")
-            print("----New Student added-----")
-            readFile()
-
-    elif ch == 2:
-        readFile()
-        Name = input("Enter the Name You Want To Delete the data = ")
-
-    elif ch == 3:
-        Name = input("Enter the Name You Want To Search = ")
-        checkTheFile(f, Name)
-    elif ch == 4:
-        readFile()
-    elif ch == 5:
-        updateStudentInfo()
-    else:
-        print("Enter A Valid Option")
+        print(" invalid choice : ")
+    conn.close()

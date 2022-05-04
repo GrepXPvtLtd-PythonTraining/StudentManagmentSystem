@@ -2,15 +2,13 @@ import sqlite3
 
 
 def newadmission():
-    cur.execute("drop table if exists studentinfo")
-    cur.execute("""create table studentinfo(
+    cur.execute("""create table if not exists studentinfo(
                      sequence INTEGER,
                      First_Name TEXT,
                      Last_Name TEXT,
                      Date_of_Birth INTEGER,
                      Phone_Number INTEGER
                      )""")
-
     conn.commit()
 
 
@@ -25,8 +23,6 @@ def addstudent():
                                                                     Phone_number))
     conn.commit()
     print(" student added ")
-    searchstudent()
-
 
 
 def deletestudent():
@@ -43,11 +39,17 @@ def searchstudent():
     conn.commit()
 
 
+def liststudent():
+    conn.execute("select * from studentinfo ")
+    print(cur.fetchall())
+    conn.commit()
+
+
 if __name__ == "__main__":
     conn = sqlite3.connect('studentinfo.db')
     cur = conn.cursor()
     newadmission()
-    print("1. addstudent \n 2.delete \n 3.search ")
+    print("1.addstudent \n 2.delete \n 3.search \n 4.liststudent ")
     choice = int(input(" enter your choice : "))
     if choice == 1:
         addstudent()
@@ -56,6 +58,8 @@ if __name__ == "__main__":
         deletestudent()
     elif choice == 3:
         searchstudent()
+    elif choice == 4:
+        liststudent()
     else:
-        print(" invalid choice : ")
+        print(" invalid choice !")
     conn.close()

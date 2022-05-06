@@ -62,7 +62,7 @@ def List_students():
 
 def run_again():
     r = input("Do you want to run this program again (yes/no) =")
-    if r == 'yes' or 'YES':
+    if r == 'yes':
         Manage_student()
     else:
         quit()
